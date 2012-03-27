@@ -1,0 +1,97 @@
+// ****************************************************************************
+//  database.tbl                                                 Tao project
+// ****************************************************************************
+//
+//   File Description:
+//
+//     Definition of the interface between XLR and native code
+//     for the "database" module.
+// ****************************************************************************
+// This software is property of Taodyne SAS - Confidential
+// Ce logiciel est la propriété de Taodyne SAS - Confidentiel
+//  (C) 1992-2010 Christophe de Dinechin <christophe@taodyne.com>
+//  (C) 2010 Jérôme Forissier <jerome@taodyne.com>
+//  (C) 2010 Catherine Burvelle <cathy@taodyne.com>
+//  (C) 2010 Lionel Schaffhauser <lionel@taodyne.com>
+//  (C) 2010 Taodyne SAS
+// ****************************************************************************
+
+#include "database.h"
+#include"tree.h"
+
+
+PREFIX(SetConnection, tree,"connection",
+              PARM(SGBD, text,)
+              PARM(setHostName, text,)
+              PARM(setDatabaseName, text,)
+              PARM(setUserName, text,)
+              PARM(setPassword, text,)
+              PARM(setPort, integer,),
+              return setConnection(self,SGBD,setHostName,setDatabaseName,setUserName,setPassword,setPort),
+              GROUP(module.database)
+              SYNOPSIS("Establishe a database connection")
+              DESCRIPTION("Connect to a database. "))
+
+PREFIX(GetTableList, tree,"table_list",
+              PARM(databasename, text,),
+              return getTableList (self,databasename),
+              GROUP(module.database)
+              SYNOPSIS("List tables in the database")
+              DESCRIPTION("List tables in the specified database.")
+              RETURNS(tree, "table list."))
+
+PREFIX(GetFieldList, tree,"field_list",
+              PARM(databaseName, text,)
+              PARM(tableName, text,),
+              return getFieldList (self,databaseName, tableName),
+              GROUP(module.database)
+              SYNOPSIS("List fields of a table")
+              DESCRIPTION("List fields from the named tale in th specified database.")
+              RETURNS(tree, "field list."))
+
+PREFIX(SimpleQuery, tree,"simple_query",
+              PARM(databasename, text,)
+              PARM(query_string, text,),
+              return simpleQuery (self,databasename,query_string),
+              GROUP(module.database)
+              SYNOPSIS("execute a query")
+              DESCRIPTION("execute a query and return the result as a tree.")
+              RETURNS(tree, "query result."))
+
+PREFIX(FilterQuery, tree,"filter_query",
+              PARM(DatabaseName, text,)
+              PARM(TableName, text,)
+              PARM(filtre, text,),
+              return filterQuery(self,DatabaseName,TableName,filtre),
+              GROUP(module.database)
+              SYNOPSIS("Execute a Filter")
+              DESCRIPTION("Execute a Filter a retern the result.")
+              RETURNS(tree, "Return the result of the filter."))
+
+PREFIX(RelationalQuery, tree,"relational_query",
+              PARM(DatabaseName, text,)
+              PARM(TableName1, text,)
+              PARM(filter, text,)
+              PARM(TableName2, text,)
+              PARM(primary_key, text,)
+              PARM(field_needs, text,)
+              PARM(place_id, integer,),
+              return relationalQuery(self,DatabaseName,TableName1,filter,
+                                     TableName2,primary_key,field_needs,place_id),
+              GROUP(module.database)
+              SYNOPSIS("Replace a foreigne key")
+              DESCRIPTION("replace a foreigne key by another field.")
+              RETURNS(tree, "Replace foreigne key by another field"))
+
+PREFIX(CloseConnection, tree,"close_connection",
+              PARM(DatabaseName, text,),
+              return closeConnection(self,DatabaseName),
+              GROUP(module.database)
+              SYNOPSIS("close connection")
+              DESCRIPTION("close the connection to a given database."))
+
+PREFIX(CloseAllConnections, tree,"close_all_connection",,
+              return closeAllConnections(self),
+              GROUP(module.database)
+              SYNOPSIS("close connections")
+              DESCRIPTION("close all connections."))

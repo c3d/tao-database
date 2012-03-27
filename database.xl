@@ -1,0 +1,62 @@
+
+// Data Base module definition
+//
+// This module defines commands to connect into a data base.
+//
+// Copyright 20010-2011 Taodyne
+
+module_description
+    id "2EBE7E14-F098-4A84-BB13-75F0EFCE311Z"
+    name "database"
+    import_name "database"
+    description "connect into a database and display it's table names"
+    version 1.0
+
+
+//affiche les donnees d'une table de base de données dans une table de la présentation
+
+nb_cell_tofill t:tree->
+    (t at 1)*(t at 2)
+
+
+db_table t:tree ->
+ shape
+  color "font"
+  font "Times", 12
+  line_color "font"
+  table (t at 1) , (t at 2),
+      table_cell_fill
+          color 0%, 0%, 0%, 0%
+          line_color 0%, 0%, 0%, 100%
+          line_width 1
+          rectangle table_cell_x, table_cell_y, table_cell_w, table_cell_h
+      table_cell_margins 5, 5
+      fill_cell t, nb_cell_tofill t , 3
+// t: arbre de données ,nb_cell_tofill : le nombre de cellule de la table  a remplir(pour la boucle for), 3: l'indice a partir du quel on commence a lire les données
+
+
+fill_cell t:tree, n:integer, i: integer ->
+             if n<>0 then
+               table_cell
+                  text text (t at i)
+               n:=n-1
+               i:=i+1
+               fill_cell t, n, i
+             else
+               i:=3
+               n:=nb_cell_tofill t
+
+
+nb_row t:tree->
+   t at 1
+
+
+nb_col t:tree->
+   t at 2
+
+fill_cell_database t:tree -> fill_cell t, nb_cell_tofill t , 3
+
+
+
+
+
