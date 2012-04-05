@@ -1,60 +1,106 @@
-
-// Data Base module definition
+// ****************************************************************************
+//  database.xl                                                    Tao project
+// ****************************************************************************
 //
-// This module defines commands to connect into a data base.
+//   File Description:
 //
-// Copyright 20010-2011 Taodyne
+//    Implements commands to connect to database.
+//    Provide a tool to draw a query result as a table
+//
+//
+//
+//
+//
+//
+//
+// ****************************************************************************
+// This document is released under the GNU General Public License.
+// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
+//  (C) 2012 Taodyne SAS
+// The icon is from http://www.fatcow.com/free-icons
+// ****************************************************************************
 
 module_description
     id "2EBE7E14-F098-4A84-BB13-75F0EFCE311Z"
-    name "database"
-    import_name "database"
-    description "connect into a database and display it's table names"
+    name "Database Connector"
+    import_name "dbConnector"
+    description "Connection to SQL databases through drivers."
+    author "Taodyne SAS"
+    website "http://www.taodyne.com"
     version 1.0
 
+module_description "fr",
+    name "Connecteur de base de données."
+    description "Connection aux bases de données SQL autravers de pilotes."
 
-//affiche les donnees d'une table de base de données dans une table de la présentation
+draw_table x:integer, y:integer, queryResult:tree ->
+//-----------------------------------------------------------------------------
+// Drawing function
+//-----------------------------------------------------------------------------
+    locally
+        cellId := 0
+        row := 0
+        col := 0
+        translatex x - (table_col + 1) * cell_width  / 2
+        translatey y + (table_row - 1) * cell_height / 2
+        time
+        draw_cells with queryResult
 
-nb_cell_tofill t:tree->
-    (t at 1)*(t at 2)
+//-----------------------------------------------------------------------------
+// Configuration
+//-----------------------------------------------------------------------------
+table_theme -> "default"
 
+cell_width  -> 250
+cell_height -> 70
+cell_edge_color -> "black"
+cell_bg_color ->  "transparent"
+cell_text_color -> "font"
+cell_font -> font "Arial", 15
 
-db_table t:tree ->
- shape
-  color "font"
-  font "Times", 12
-  line_color "font"
-  table (t at 1) , (t at 2),
-      table_cell_fill
-          color 0%, 0%, 0%, 0%
-          line_color 0%, 0%, 0%, 100%
-          line_width 1
-          rectangle table_cell_x, table_cell_y, table_cell_w, table_cell_h
-      table_cell_margins 5, 5
-      fill_cell t, nb_cell_tofill t , 3
-// t: arbre de données ,nb_cell_tofill : le nombre de cellule de la table  a remplir(pour la boucle for), 3: l'indice a partir du quel on commence a lire les données
+//-----------------------------------------------------------------------------
+// Declarations
+//-----------------------------------------------------------------------------
 
+cellId -> 0
+row -> 0
+col -> 0
 
-fill_cell t:tree, n:integer, i: integer ->
-             if n<>0 then
-               table_cell
-                  text text (t at i)
-               n:=n-1
-               i:=i+1
-               fill_cell t, n, i
-             else
-               i:=3
-               n:=nb_cell_tofill t
+table_row -> 0
+table_col -> 0
 
+toText T:text -> T
+toText Tr:tree -> text Tr
 
-nb_row t:tree->
-   t at 1
+draw_a_cell "default", C:integer, R:integer, T:tree ->
+    locally
+        line_color cell_edge_color
+        color cell_bg_color
+        rectangle cell_width * C, -cell_height * R, cell_width, cell_height
+        text_box cell_width * C, -cell_height * R, cell_width, cell_height,
+            align_center
+            vertical_align_center
+            color cell_text_color
+            line_color "font"
+            cell_font
+            text toText T
 
+draw_cells cc:tree ->
+    cellId := cellId + 1
+    // First cell is row number
+    // Second cell is column number
+    if cellId = 1 then
+        table_row := cc
+    else if cellId = 2 then
+        table_col := cc
 
-nb_col t:tree->
-   t at 2
-
-fill_cell_database t:tree -> fill_cell t, nb_cell_tofill t , 3
+    // Other cells are data
+    if cellId > 2 then
+        if col >= table_col then
+            row := row + 1
+            col := 0
+        col := col + 1
+        draw_a_cell table_theme, col, row, cc
 
 
 

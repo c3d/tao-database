@@ -22,9 +22,22 @@ QT       += sql
 
 HEADERS     = \
     database.h \
-    DBconnection.h
+    DBconnection.h \
+    doc/dbConnector.doxy.h
 
 SOURCES     = database.cpp \
     DBconnection.cpp
 TBL_SOURCES = database.tbl
-OTHER_FILES = database.xl database.tbl traces.tbl
+OTHER_FILES = database.xl database.tbl traces.tbl \
+    db_connector.taokey.notsigned \
+    doc/Doxyfile.in
+
+INSTALLS    += thismod_icon
+
+LICENSE_FILES = db_connector.taokey.notsigned
+include(../licenses.pri)
+
+QMAKE_SUBSTITUTES = doc/Doxyfile.in
+DOXYFILE = doc/Doxyfile
+DOXYLANG = en,fr
+include(../modules_doc.pri)

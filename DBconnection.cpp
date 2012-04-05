@@ -69,6 +69,7 @@ void fillDrivers()
     dr = "QODBC";
     drivers[QString("Sybase").toUpper()] = dr;
     drivers[QString("Sybase Adaptive Server").toUpper()] = dr;
+    drivers[QString("ODBC").toUpper()] = dr;
 
     //------------------------------------------------
     /*driver for MySQL version ?  */
@@ -89,6 +90,7 @@ void fillDrivers()
     dr ="QODBC3";
     drivers[QString("Microsoft SQL Server").toUpper()] = dr;
     drivers[QString("SQL Server").toUpper()] = dr;
+    drivers[QString("ODBC3").toUpper()] = dr;
 
     //---------------------------------------------------
     /*driver for  PostgreSQL (versions 7.3 and above)*/
@@ -98,13 +100,16 @@ void fillDrivers()
     //-------------------------------------------------
     /*driver for SQLite version 2 */
     //-------------------------------------------------
-    drivers[QString("SQLite version 2").toUpper()] = "SQLITE2";
+    dr = "SQLITE2";
+    drivers[QString("SQLite version 2").toUpper()] = dr;
+    drivers[QString("SQLite2").toUpper()] = dr;
 
     //-------------------------------------------------
     /*driver for SQLite version 3 */
     //-------------------------------------------------
     dr = "SQLITE";
     drivers[QString("SQLite").toUpper()] = dr;
+    drivers[QString("SQLite3").toUpper()] = dr;
     drivers[QString("SQLite version 3").toUpper()] = dr;
 }
 
@@ -168,7 +173,7 @@ XL::Tree_p buildAnswer(QSqlQuery query)
     int nbCol = query.record().count();
     // The following Integer_p is the number of rows in the answer.
     // It's value must be updated once the actual number of row will be known.
-    Integer_p nbRow = new Integer(0, Tree::NOWHERE);
+    Integer_p nbRow = new Integer(-1, Tree::NOWHERE);
 
     TreeList rowResult, queryResult;
 

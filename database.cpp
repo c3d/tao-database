@@ -33,6 +33,10 @@ using namespace Tao;
 
 XL_DEFINE_TRACES
 
+static LicenseTimer lic;
+
+
+
 Tree_p setConnection(Tree_p /* self */,
                      Text_p SGBD, Text_p setHostName,
                      Text_p setDatabaseName, Text_p setUserName,
@@ -42,13 +46,19 @@ Tree_p setConnection(Tree_p /* self */,
 //-----------------------------------------------------------------------------
 {
     IFTRACE(dbconnector_I)
-            debug() << "INFO:setConnection \n"
+            debug() << "INFO: setConnection \n"
                     << "\tSGBD ["<< SGBD->value << "]\n"
                     << "\tsetHostName [" << setHostName->value  << "]\n"
                     << "\tsetDatabaseName [" << setDatabaseName->value  << "]\n"
                     << "\tsetUserName [" <<  setUserName->value << "]\n"
                     << "\tsetPassword [" <<  setPassword->value << "]\n"
                     << "\tsetPort [" <<  setPort->value << "]\n";
+    if (! lic.isConnectionAuthorized())
+    {
+        IFTRACE(dbconnector_W)
+                debug() << "WARNING: unlicensed module. Trial time as expired.\n";
+        return XL::xl_false;
+    }
     QString sgbd = +SGBD->value;
     QString HostName = +setHostName->value;
     QString DatabaseName = +setDatabaseName->value;
@@ -85,13 +95,13 @@ Tree_p setConnection(Tree_p /* self */,
      * If DSN was used to set up the connection,
      * it would have the same name as the database.
      */
-
     QSqlDatabase SqlDB = QSqlDatabase::addDatabase(driverName, DatabaseName);
     SqlDB.setHostName(HostName);
     SqlDB.setDatabaseName(DatabaseName);
     SqlDB.setUserName(UserName);
     SqlDB.setPassword(Password);
     SqlDB.setPort(Port);
+
     if ( ! SqlDB.open())
     {
         IFTRACE(dbconnector_E)
@@ -207,8 +217,8 @@ Tree_p getTableList(Tree_p self ,Text_p dbName)
     // Get DB table list
     list = conn.tables();
 
-    //number of line = nb of tables + header + row,col
-    rowResult.push_back (new Integer(list.length()+2));
+    //number of line = nb of tables + header
+    rowResult.push_back (new Integer(list.length()+1));
     // Par default le nombre de colonnes est égale a 1
     rowResult.push_back (new Integer(1));
     result.push_back(xl_list_to_tree(rowResult, ","));
@@ -238,8 +248,8 @@ XL::Tree_p getFieldList(Tree_p self, Text_p dbName, Text_p tblName)
     QSqlDatabase conn = QSqlDatabase::database(databaseName);
     QSqlRecord fields = conn.record(tableName);
 
-    // number of line = nb of field + header + row,col
-    rowResult.push_back (new Integer(fields.count()+2));
+    // number of line = nb of field + header
+    rowResult.push_back (new Integer(fields.count()+1));
     // Only one column
     rowResult.push_back (new Integer(1));
     result.push_back(xl_list_to_tree(rowResult, ","));
@@ -373,15 +383,24 @@ Tree_p relationalQuery(Tree_p self, Text_p DatabaseName,
     return res;
 
 }
-
-
-int module_init(const Tao::ModuleApi *, const Tao::ModuleInfo *)
+int module_init(const Tao::ModuleApi *api, const Tao::ModuleInfo *)
 // ----------------------------------------------------------------------------
 //   Initialize the Tao module
 // ----------------------------------------------------------------------------
 {
     XL_INIT_TRACES();
 
+    // Module available for Impress version so silently check it before
+    // checking with potential warning window "dbConnector" license.
+    if ( ! api->hasLicense("Tao Presentations Impress 1.0") &&
+         ! api->checkLicense("dbConnector 1.0", false) )
+    {
+        lic.start(5 * 60 * 1000);
+        IFTRACE(dbconnector_W)
+                debug() << "WARNING: No license available."
+                        << " Connections available for "
+                        << lic.interval() << " msec. \n";
+    }
     fillDrivers();
 
     return no_error;

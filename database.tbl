@@ -49,7 +49,7 @@ PREFIX(GetFieldList, tree,"field_list",
               DESCRIPTION("List fields from the named tale in th specified database.")
               RETURNS(tree, "field list."))
 
-PREFIX(SimpleQuery, tree,"simple_query",
+PREFIX(SimpleQuery, tree,"query",
               PARM(databasename, text,)
               PARM(query_string, text,),
               return simpleQuery (self,databasename,query_string),
