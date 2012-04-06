@@ -16,11 +16,11 @@
  * @~french
  * @taomoduledescription{dbConnector, Connexion aux bases de données}
  *
- * Commandes pour se connecter à une base de données (BD) et exécuter des
- * requêtes SQL.
+ * Ensemble de commandes pour se connecter à une base de données (BD) et
+ * exécuter des requêtes SQL.
  *
  * Ce module n'est pas une base de données, mais seulement un connecteur pour
- * les bases près installées. Ce module utilise l'interface Qt qui elle même
+ * les bases pré-installées. Ce module utilise l'interface Qt qui elle même
  * utilise des pilotes spécifiques pour chaque base de données. Référez-vous
  * à la <a href="http://doc.qt.nokia.com/4.7/sql-driver.html">documentation Qt</a>
  * (en anglais) pour savoir quelles bases de données sont supportées, et comment
@@ -33,11 +33,11 @@
  @code
 import dbConnector
 connection "MySQL", "localhost", "test", "root", "root_pwd", 3306
-query -> simple_query "test", "SELECT t1.`ID`, t1.`name` FROM t1; "
+query -> query "test", "SELECT t1.`ID`, t1.`name`, t1.`Population` FROM t1; "
 draw_table 0, 0, query
 close_connection "test"
  @endcode
- *  ================== IMAGE DE LA TABLE SIMPLE ==================
+ *  @image html simple_table.png
  * @~english
  * All return results are made of line list, and each line is itself made of a
  * list. The first list is exactly made of two integers which are the column and
@@ -55,7 +55,7 @@ close_connection "test"
  * La fontion @ref draw_table permet de représenter le résultat sous la forme
  * d'une table.
  * @~
- * ============= ILLUSTRATION DU RESULTAT AFFICHE DANS LE TEST CI-DESSUS ===============
+ *
  * @endtaomoduledescription{dbConnector}
  *
  * @{
@@ -274,11 +274,78 @@ draw_table( integer x, integer y, tree queryResult);
  * être utilisées en lecture seulement :
  * @ref cellId, @ref row, @ref col, qui sont les valeurs courantes du numéro de
  * cellule, du numéro de ligne et de colonne.
- * Il y a aussi @ref rtable_row et @ref rtable_col qui sont les nombre total
+ * Il y a aussi @ref table_row et @ref table_col qui sont les nombre total
  * de lignes et colonne à dessiner.
  *
  * @~
- * ========== ILLUSTRER AVEC LA TABLE EN BULLE ===================
+ @code
+import dbConnector 1.0
+import Animate 1.0
+
+//-----------------------------------------------------------------------------
+// Configuration
+//-----------------------------------------------------------------------------
+
+cell_width := 200
+cell_height := 100
+
+cell_bg_color := "transparent"
+cell_text_color := "font"
+table_theme := "sphere"
+//-----------------------------------------------------------------------------
+// Declarations
+//-----------------------------------------------------------------------------
+
+draw_a_cell "sphere", C:integer, R:integer, T:tree ->
+  locally
+    frame_texture cell_width * 3.15, cell_height*3.15,
+        locally
+            color "white"
+            if R = 0 then
+              radial_gradient cell_width/2, cell_height/2, cell_height/2, cell_width, cell_height,
+                gradient_color 0, 1, 1, 0, 1
+                gradient_color 1, 1, 0, 1, 1
+            else
+              radial_gradient cell_width/2, cell_height/2, cell_height/2, cell_width, cell_height,
+                gradient_color 0, 0, 1, 1, 1
+                gradient_color 1, 1, 1, 0, 1
+            rectangle 0,0, cell_width * 3.15, cell_height * 6.29
+
+        text_box 0,0, cell_width , cell_height ,
+            align_center
+            vertical_align_center
+            font "Arial", 20
+            if R = 0 then
+                color "red"
+                font "Arial", 25, bold
+            else
+                color cell_text_color
+            text toText T
+
+     locally
+         color "white"
+         texture_wrap true, true
+         tx ->  fade_in(page_time, 15/(cellId + 0.01))
+         translate cell_width * C * tx, -cell_height * R * tx, cell_height * tx
+         rotatex tx * 3600
+         light 0
+         light_position 1000, 1000, 1000
+         sphere 0,0,0, cell_width, cell_height, cell_height, 20, 20
+
+//-----------------------------------------------------------------------------
+// Begining
+//-----------------------------------------------------------------------------
+page "connection",
+    connection "MySQL", "localhost", "test", "root", "Ch0ucr0ute", 3306
+
+page "query",
+    query -> query "test", "SELECT t1.`ID`, t1.`name`, t1.`Population` FROM t1; "
+    draw_table 0, 0, query
+
+page "close",
+    close_connection "test"
+@endcode
+@image html colored_table.png
  *
  */
 draw_a_cell( text theme, integer col, integer row, tree value);
@@ -395,8 +462,13 @@ integer cell_height;
  * Color of the line around the cell. Allowed values are all those supported
  * by the @ref color command.
  *
- * @~french
+ * Default color is "black".
  *
+ * @~french
+ * Couleur du bord de la cellule.
+ *
+ * Couleur de la ligne de contour des cellules. Les valeurs autorisées sont
+ * toutes celles surportées par la commande @ref color.
  *
  * La valeur par défaut est noire : "black".
  */
@@ -404,48 +476,63 @@ color cell_edge_color;
 
 
 /**
- * @property
+ * @property cell_bg_color
  * @~english
+ * Cell background color.
  *
+ * Color of cell background. Allowed values are all those supported
+ * by the @ref color command.
  *
- * .
+ * Default color is "transparent".
  *
  * @~french
+ * Couleur du bord de la cellule.
  *
+ * Couleur du fond des cellules. Les valeurs autorisées sont
+ * toutes celles surportées par la commande @ref color.
  *
- * .
+ * La valeur par défaut est transparente : "transparent".
  */
-//cell_bg_color ->  "transparent"
+color cell_bg_color;
 
 
 /**
- * @property
+ * @property cell_text_color
  * @~english
+ * Cell text color.
  *
+ * Color of text in cells. Allowed values are all those supported
+ * by the @ref color command.
  *
- * .
+ * Default color is "font".
  *
  * @~french
+ * Couleur du texte de la cellule.
  *
+ * Couleur du texte des cellules. Les valeurs autorisées sont
+ * toutes celles surportées par la commande @ref color.
  *
- * .
+ * La valeur par défaut est transparente : "font".
  */
-//cell_text_color -> "font"
+color cell_text_color;
 
 
 /**
- * @property
+ * @property cell_font
  * @~english
+ * Font used to draw the text.
  *
- *
- * .
+ * Font details to be used. Default value is <tt>"Arial", 15</tt>. Supported
+ * forms are those supported by command @ref font.
  *
  * @~french
+ * Font pour les cellules.
  *
- *
- * .
+ * Détails de la fonte utilisée pour écrire le texte dans les cellules.
+ * La valeur par défaut est <tt>"Arial", 15</tt>. Les formes supportées sont
+ * toutes celles de la commande @ref font.
  */
-//cell_font -> font "Arial", 15
+string cell_font;
 
 /**
  * @}
