@@ -30,8 +30,8 @@ module_description
     version 1.0
 
 module_description "fr",
-    name "Connecteur de base de donnÃ©es."
-    description "Connection aux bases de donnÃ©es SQL autravers de pilotes."
+    name "Connecteur de base de données."
+    description "Connection aux bases de données SQL autravers de pilotes."
 
 draw_table x:integer, y:integer, queryResult:tree ->
 //-----------------------------------------------------------------------------

@@ -16,6 +16,10 @@
 //  (C) 2010 Taodyne SAS
 // ****************************************************************************
 
+#include "database.h"
+#include"tree.h"
+
+
 PREFIX(SetConnection, tree,"connection",
               PARM(SGBD, text,)
               PARM(setHostName, text,)
