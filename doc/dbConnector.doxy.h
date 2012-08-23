@@ -52,7 +52,7 @@ close_connection "test"
  * la liste suivante (qui correspond à la première ligne) contient le nom des
  * colonnes. Cette première ligne est incluse dans le nombre total de ligne de
  * la réponse.
- * La fonction @ref draw_table permet de représenter le résultat sous la forme
+ * La fontion @ref draw_table permet de représenter le résultat sous la forme
  * d'une table.
  * @~
  *
