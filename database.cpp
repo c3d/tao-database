@@ -219,7 +219,7 @@ Tree_p getTableList(Tree_p self ,Text_p dbName)
 
     //number of line = nb of tables + header
     rowResult.push_back (new Integer(list.length()+1));
-    // Par default le nombre de colonnes est égale a 1
+    // Par default le nombre de colonnes est Ã©gale a 1
     rowResult.push_back (new Integer(1));
     result.push_back(xl_list_to_tree(rowResult, ","));
 
