@@ -14,8 +14,9 @@
 //
 //
 // ****************************************************************************
-// This document is released under the GNU General Public License.
-// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
+// This file may be used in accordance with the terms and conditions contained
+// in the Tao Presentations license agreement, or alternatively, in a signed
+// license agreement between you and Taodyne SAS.
 //  (C) 2012 Taodyne SAS
 // The icon is from http://www.fatcow.com/free-icons
 // ****************************************************************************
@@ -27,7 +28,7 @@ module_description
     description "Connection to SQL databases through drivers."
     author "Taodyne SAS"
     website "http://www.taodyne.com"
-    version 1.0
+    version 1.001
 
 module_description "fr",
     name "Connecteur de base de données."
