@@ -2,7 +2,7 @@
  * @~english
  * @taomoduledescription{dbConnector, Connection to SQL database utilities}
  *
- * Commands to connect to database (DB) and execute SQL queries.
+ * <tt>import dbConnector</tt> - Commands to connect to database (DB) and execute SQL queries.
  *
  * This module is not a database one. It only gives access to installed database.
  * This module uses Qt interface that itself uses specific drivers for database.
@@ -16,7 +16,7 @@
  * @~french
  * @taomoduledescription{dbConnector, Connexion aux bases de données}
  *
- * Ensemble de commandes pour se connecter à une base de données (BD) et
+ * <tt>import dbConnector</tt> - Ensemble de commandes pour se connecter à une base de données (BD) et
  * exécuter des requêtes SQL.
  *
  * Ce module n'est pas une base de données, mais seulement un connecteur pour
