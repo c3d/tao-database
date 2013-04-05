@@ -50,6 +50,33 @@ bool testConnection(QSqlDatabase &conn);
 //---------------------------------------------------------------------------
 XL::Tree_p buildAnswer(QSqlQuery query);
 
+
 extern "C++" XL::Tree_p closeAllConnections (XL::Tree_p /*self*/);
+
+class LicenseTimer : public QTimer
+{
+    Q_OBJECT
+ public:
+
+    LicenseTimer()
+    {
+        LicenceOK = true;
+        setSingleShot(true);
+        connect(this, SIGNAL(timeout()), this, SLOT(timedout()));
+    }
+    bool isConnectionAuthorized()
+    {
+        return LicenceOK;
+    }
+
+public slots:
+    void timedout()
+    {
+        LicenceOK = false;
+        closeAllConnections(NULL);
+    }
+protected :
+    bool LicenceOK;
+};
 
 #endif // DBCONNECTION_H
