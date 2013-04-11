@@ -14,8 +14,11 @@ MODINSTDIR = database
 
 include(../modules.pri)
 
-QT       += core gui sql
-greaterThan(QT_MAJOR_VERSION, 4) { QT += widgets }
+QT       += core
+
+QT       += gui
+
+QT       += sql
 
 HEADERS     = \
     database.h \
@@ -30,6 +33,9 @@ OTHER_FILES = database.xl database.tbl traces.tbl \
     doc/Doxyfile.in
 
 INSTALLS    += thismod_icon
+
+LICENSE_FILES = db_connector.taokey.notsigned
+include(../licenses.pri)
 
 QMAKE_SUBSTITUTES = doc/Doxyfile.in
 DOXYFILE = doc/Doxyfile
