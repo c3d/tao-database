@@ -390,10 +390,7 @@ int module_init(const Tao::ModuleApi *api, const Tao::ModuleInfo *)
 {
     XL_INIT_TRACES();
 
-    // Module available for Impress version so silently check it before
-    // checking with potential warning window "dbConnector" license.
-    if ( ! api->hasLicense("Tao Presentations Impress 1.001") &&
-         ! api->checkLicense("dbConnector 1.0", false) )
+    if ( ! api->checkImpressOrLicense("dbConnector 1.0") )
     {
         lic.start(5 * 60 * 1000);
         IFTRACE(dbconnector_W)
