@@ -33,8 +33,6 @@ using namespace Tao;
 
 XL_DEFINE_TRACES
 
-static LicenseTimer lic;
-
 
 
 Tree_p setConnection(Tree_p /* self */,
@@ -53,12 +51,7 @@ Tree_p setConnection(Tree_p /* self */,
                     << "\tsetUserName [" <<  setUserName->value << "]\n"
                     << "\tsetPassword [" <<  setPassword->value << "]\n"
                     << "\tsetPort [" <<  setPort->value << "]\n";
-    if (! lic.isConnectionAuthorized())
-    {
-        IFTRACE(dbconnector_W)
-                debug() << "WARNING: unlicensed module. Trial time as expired.\n";
-        return XL::xl_false;
-    }
+
     QString sgbd = +SGBD->value;
     QString HostName = +setHostName->value;
     QString DatabaseName = +setDatabaseName->value;
@@ -383,21 +376,13 @@ Tree_p relationalQuery(Tree_p self, Text_p DatabaseName,
     return res;
 
 }
-int module_init(const Tao::ModuleApi *api, const Tao::ModuleInfo *)
+int module_init(const Tao::ModuleApi *, const Tao::ModuleInfo *)
 // ----------------------------------------------------------------------------
 //   Initialize the Tao module
 // ----------------------------------------------------------------------------
 {
     XL_INIT_TRACES();
 
-    if ( ! api->checkImpressOrLicense("dbConnector 1.0") )
-    {
-        lic.start(5 * 60 * 1000);
-        IFTRACE(dbconnector_W)
-                debug() << "WARNING: No license available."
-                        << " Connections available for "
-                        << lic.interval() << " msec. \n";
-    }
     fillDrivers();
 
     return no_error;
