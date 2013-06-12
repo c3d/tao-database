@@ -34,9 +34,6 @@ OTHER_FILES = database.xl database.tbl traces.tbl \
 
 INSTALLS    += thismod_icon
 
-LICENSE_FILES = db_connector.taokey.notsigned
-include(../licenses.pri)
-
 QMAKE_SUBSTITUTES = doc/Doxyfile.in
 DOXYFILE = doc/Doxyfile
 DOXYLANG = en,fr
