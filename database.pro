@@ -14,11 +14,8 @@ MODINSTDIR = database
 
 include(../modules.pri)
 
-QT       += core
-
-QT       += gui
-
-QT       += sql
+QT       += core gui sql
+greaterThan(QT_MAJOR_VERSION, 4) { QT += widgets }
 
 HEADERS     = \
     database.h \
