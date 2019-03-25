@@ -33,6 +33,8 @@
 // If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 #include "tree.h"
+#undef record
+
 #include <QStringList>
 #include <QSqlDatabase>
 using namespace std;

@@ -33,13 +33,14 @@
 // If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 #include "DBconnection.h"
+#include "runtime.h"
+#include "tao_utf8.h"
+
+#undef record
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlRecord>
-#include "runtime.h"
-#include "tao_utf8.h"
 #include <QVariant>
-
 #include <QMap>
 
 using namespace XL;
